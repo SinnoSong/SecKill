@@ -19,10 +19,22 @@
         <DataGrid x:Name="DataGrid">
             
         </DataGrid>
-        <StackPanel Grid.Column="1" Grid.RowSpan="3" >
-            <TextBlock> 日志记录：</TextBlock>
-            <TextBlock Margin="5" Height="Auto">
-            </TextBlock>
-        </StackPanel>
+        <DockPanel Grid.Column="1" Grid.RowSpan="3">
+            <TextBlock DockPanel.Dock="Top"> 日志记录：</TextBlock>
+            <TextBox Margin="5" Background="LightGray">
+            </TextBox>
+        </DockPanel>
+        <WrapPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button x:Name="SettingCookie">设置Cookie</Button>
+            <Button x:Name="SwitchMember">选择成员</Button>
+            <Button x:Name="RefreshVaccineList">刷新疫苗列表</Button>
+            <Button x:Name="StartKill">开始</Button>
+        </WrapPanel>
+        <WrapPanel Grid.Row="2" VerticalAlignment="Center">
+            <ComboBox x:Name="Province" Width="150" Height="40" DisplayMemberPath="Name" SelectedValuePath="Value" IsReadOnly="True"
+                      HorizontalAlignment="Left" VerticalAlignment="Top" Selected="Province_Selected"/>
+            <ComboBox x:Name="City"></ComboBox>
+            <Button x:Name="Confirm">确定</Button>
+        </WrapPanel>
     </Grid>
 </Window>
