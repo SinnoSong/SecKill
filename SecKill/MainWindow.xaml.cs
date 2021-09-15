@@ -13,15 +13,5 @@ namespace SecKill
             InitializeComponent();
             Province.ItemsSource = Areas.GetAreas();
         }
-
-        private void Province_Selected(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show(Province.SelectedValue.ToString());
-        }
-
-        private void Province_Selected_1(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
