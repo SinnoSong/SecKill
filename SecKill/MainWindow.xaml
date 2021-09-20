@@ -32,8 +32,8 @@
         </WrapPanel>
         <WrapPanel Grid.Row="2" VerticalAlignment="Center">
             <ComboBox x:Name="Province" Width="150" Height="40" DisplayMemberPath="Name" SelectedValuePath="Value" IsReadOnly="True"
-                      HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <ComboBox x:Name="City"></ComboBox>
+                      HorizontalAlignment="Left" VerticalAlignment="Top" SelectionChanged="City_SelectionChanged"/>
+            <ComboBox x:Name="City" DisplayMemberPath="Name" SelectedValuePath="Value"/>
             <Button x:Name="Confirm">确定</Button>
         </WrapPanel>
     </Grid>
