@@ -8,7 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
-using SecKill.Config;
+using config = SecKill.Config.Config;
 using System.Threading.Tasks;
 
 namespace SecKill.Service
@@ -86,7 +86,7 @@ namespace SecKill.Service
 
         private void HasAvailableConfig()
         {
-            if (Config.Config.Cookie.Count == 0)
+            if (config.Cookie.Count == 0)
             {
                 throw new Exception("请先配置cookie");
             }
@@ -128,7 +128,7 @@ namespace SecKill.Service
             {
                 return jsonObject.GetValue("data").ToString();
             }
-            throw new Exception(jsonObject.GetValue("code").ToString() + "   " + jsonObject.GetValue("msg").ToString());
+            throw new BusinessException(jsonObject.GetValue("code").ToString(), jsonObject.GetValue("msg").ToString());
         }
 
         private Dictionary<string, string> GetCommonHeader()
@@ -136,12 +136,12 @@ namespace SecKill.Service
             Dictionary<string, string> commHeader = new Dictionary<string, string>();
             commHeader.Add("User-Agent", "Mozilla/5.0 (Linux; Android 5.1.1; SM-N960F Build/JLS36C; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.136 Mobile Safari/537.36 MMWEBID/1042 MicroMessenger/7.0.15.1680(0x27000F34) Process/appbrand0 WeChat/arm32 NetType/WIFI Language/zh_CN ABI/arm32");
             commHeader.Add("Referer", "https://servicewechat.com/wxff8cad2e9bf18719/2/page-frame.html");
-            commHeader.Add("tk", Config.Config.TK);
+            commHeader.Add("tk", config.TK);
             commHeader.Add("Accept", "application/json, text/plain, */*");
             commHeader.Add("Host", "miaomiao.scmttec.com");
-            if (Config.Config.Cookie.Count > 0)
+            if (config.Cookie.Count > 0)
             {
-                string cookie = string.Join(";", new List<string>(Config.Config.Cookie.Values));
+                string cookie = string.Join(";", new List<string>(config.Cookie.Values));
                 commHeader.Add("Cookie", cookie);
             }
             return commHeader;
@@ -155,7 +155,7 @@ namespace SecKill.Service
                 foreach (var item in cookies)
                 {
                     string cookie = item.Split(';')[0].Split(':')[1].Trim();
-                    Config.Config.Cookie.Add(cookie.Split('=')[0], cookie);
+                    config.Cookie.Add(cookie.Split('=')[0], cookie);
                 }
             }
         }
@@ -163,7 +163,7 @@ namespace SecKill.Service
         private string EccHs(string secKillId, string st)
         {
             string salt = "ux$ad70*b";
-            int memberId = Config.Config.MemberId;
+            int memberId = config.MemberId;
             string md5Str = Md5Hex(secKillId + memberId + st);
             return Md5Hex(md5Str + salt);
         }
