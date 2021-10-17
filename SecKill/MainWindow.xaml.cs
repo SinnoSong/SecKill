@@ -15,6 +15,7 @@ namespace SecKill
     public partial class MainWindow : Window
     {
         List<Area> areas = Areas.GetAreas();
+        SettingCookieWindow settingWindow;
         public MainWindow()
         {
             InitializeComponent();
@@ -46,9 +47,14 @@ namespace SecKill
 
         private void SettingCookie_Click(object sender, RoutedEventArgs e)
         {
-            SettingCookieWindow cookiePage = new SettingCookieWindow();
-            cookiePage.Title = "设置抢购参数";
-            cookiePage.Show();
+            if (settingWindow == null)
+            {
+                settingWindow = new SettingCookieWindow
+                {
+                    Title = "设置抢购参数"
+                };
+            }
+            settingWindow.Show();
         }
 
         private void SwitchMember_Click(object sender, RoutedEventArgs e)

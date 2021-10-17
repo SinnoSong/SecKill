@@ -16,7 +16,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <DataGrid x:Name="DataGrid">
-
+            
         </DataGrid>
         <DockPanel Grid.Column="1" Grid.RowSpan="3">
             <TextBlock DockPanel.Dock="Top"> 日志记录：</TextBlock>
@@ -31,7 +31,7 @@
                 <Button x:Name="StartKill" Click="StartKill_Click" Margin="5">开始</Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
-                <ComboBox x:Name="Province" Width="150" Height="40" DisplayMemberPath="Name" SelectedValuePath="Value" IsReadOnly="True"
+                <ComboBox x:Name="Province" Width="150" DisplayMemberPath="Name" SelectedValuePath="Value" IsReadOnly="True"
                       HorizontalAlignment="Left" VerticalAlignment="Top" SelectionChanged="City_SelectionChanged" Margin="5"/>
                 <ComboBox x:Name="City" Width="150" DisplayMemberPath="Name" SelectedValuePath="Value" Margin="5"/>
                 <Button x:Name="Confirm" Click="Confirm_Click" Margin="5">确定</Button>

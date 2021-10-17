@@ -21,9 +21,9 @@
             <TextBox x:Name="reqHeader" IsReadOnly="True"></TextBox>
         </StackPanel>
         <Label Grid.Row="1" HorizontalContentAlignment="Center">TK:</Label>
-        <TextBox Grid.Row="1" Grid.Column="2" Margin="5"></TextBox>
+        <TextBox x:Name="TKText" Grid.Row="1" Grid.Column="2" Margin="5"></TextBox>
         <Label Grid.Row="2" HorizontalContentAlignment="Center">Cookie:</Label>
-        <TextBox Grid.Row="2" Grid.Column="2" Width="Auto" Margin="5"></TextBox>
+        <TextBox x:Name="CookieText" Grid.Row="2" Grid.Column="2" Width="Auto" Margin="5"></TextBox>
         <WrapPanel Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="2">
             <Button x:Name="parseButton" Margin="5 5 20 5" Padding="10" Click="ParseButton_Click">解析</Button>
             <Button x:Name="saveButton" Margin="20 5 5 5" Padding="10" Click="SaveButton_Click">保存</Button>
