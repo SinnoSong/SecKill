@@ -49,7 +49,7 @@ namespace SecKill.Service
             Dictionary<string, string> urlParams = new Dictionary<string, string>();
             urlParams.Add("offset", "0");
             urlParams.Add("limit", "100");
-            urlParams.Add("regionCode", Config.Config.RegionCode);
+            urlParams.Add("regionCode", config.RegionCode);
             string json = Get(path, urlParams, null);
             return JsonConvert.DeserializeObject<List<VaccineList>>(json);
         }
@@ -107,12 +107,16 @@ namespace SecKill.Service
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(path);
             request.Method = "GET";
-            headers = headers.Concat(GetCommonHeader()).ToDictionary(k => k.Key, v => v.Value); ;
+            headers = GetCommonHeader();
 
             foreach (KeyValuePair<string, string> kvp in headers)
             {
                 request.Headers.Add(kvp.Key, kvp.Value);
             }
+            request.UserAgent = "Mozilla/5.0 (Linux; Android 5.1.1; SM-N960F Build/JLS36C; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.136 Mobile Safari/537.36 MMWEBID/1042 MicroMessenger/7.0.15.1680(0x27000F34) Process/appbrand0 WeChat/arm32 NetType/WIFI Language/zh_CN ABI/arm32";
+            request.Referer = "https://servicewechat.com/wxff8cad2e9bf18719/2/page-frame.html";
+            request.Accept = "application/json, text/plain, */*";
+            request.Host = "miaomiao.scmttec.com";
             request.ContinueTimeout = 2500;
             request.Timeout = 2500;
 
@@ -123,7 +127,7 @@ namespace SecKill.Service
             {
                 json = sr.ReadToEnd();
             }
-            JObject jsonObject = JsonConvert.DeserializeObject<JObject>(json);
+            var jsonObject = JsonConvert.DeserializeObject<JObject>(json);
             if ("0000".Equals(jsonObject.GetValue("code")))
             {
                 return jsonObject.GetValue("data").ToString();
@@ -134,11 +138,7 @@ namespace SecKill.Service
         private Dictionary<string, string> GetCommonHeader()
         {
             Dictionary<string, string> commHeader = new Dictionary<string, string>();
-            commHeader.Add("User-Agent", "Mozilla/5.0 (Linux; Android 5.1.1; SM-N960F Build/JLS36C; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.136 Mobile Safari/537.36 MMWEBID/1042 MicroMessenger/7.0.15.1680(0x27000F34) Process/appbrand0 WeChat/arm32 NetType/WIFI Language/zh_CN ABI/arm32");
-            commHeader.Add("Referer", "https://servicewechat.com/wxff8cad2e9bf18719/2/page-frame.html");
             commHeader.Add("tk", config.TK);
-            commHeader.Add("Accept", "application/json, text/plain, */*");
-            commHeader.Add("Host", "miaomiao.scmttec.com");
             if (config.Cookie.Count > 0)
             {
                 string cookie = string.Join(";", new List<string>(config.Cookie.Values));
@@ -150,7 +150,7 @@ namespace SecKill.Service
         private void DealHeader(HttpWebResponse response)
         {
             string[] cookies = response.Headers.GetValues("Set-Cookie");
-            if (cookies.Length > 0)
+            if (cookies != null && cookies.Length > 0)
             {
                 foreach (var item in cookies)
                 {

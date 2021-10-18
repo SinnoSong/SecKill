@@ -1,16 +1,7 @@
-﻿using System;
+﻿using SecKill.Model;
+using SecKill.Service;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SecKill.Windows
 {
@@ -19,9 +10,22 @@ namespace SecKill.Windows
     /// </summary>
     public partial class SwitchMemberWindow : Window
     {
+        HttpService HttpService { get; set; }
         public SwitchMemberWindow()
         {
             InitializeComponent();
+            InitialData();
+        }
+
+        private void InitialData()
+        {
+            HttpService = new HttpService();
+            List<Member> members = HttpService.GetMembers();
+            if (members.Count==0)
+            {
+                MessageBox.Show("你还没有添加任何成员");
+            }
+            //DataContext =
         }
     }
 }

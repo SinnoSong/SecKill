@@ -16,6 +16,7 @@ namespace SecKill
     {
         List<Area> areas = Areas.GetAreas();
         SettingCookieWindow settingWindow;
+        SwitchMemberWindow MemberWindow;
         public MainWindow()
         {
             InitializeComponent();
@@ -49,17 +50,28 @@ namespace SecKill
         {
             if (settingWindow == null)
             {
-                settingWindow = new SettingCookieWindow
+                SettingCookieWindow settingCookieWindow = new SettingCookieWindow
                 {
                     Title = "设置抢购参数"
                 };
+                settingWindow = settingCookieWindow;
             }
             settingWindow.Show();
+            settingWindow.Focus();
         }
 
         private void SwitchMember_Click(object sender, RoutedEventArgs e)
         {
 
+            if (MemberWindow == null)
+            {
+                SwitchMemberWindow switchMemberWindow = new SwitchMemberWindow
+                {
+                    Title = "选择成员"
+                };
+                MemberWindow = switchMemberWindow;
+            }
+            MemberWindow.Show();
         }
 
         private void RefreshVaccineList_Click(object sender, RoutedEventArgs e)

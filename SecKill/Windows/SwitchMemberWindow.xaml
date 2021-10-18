@@ -5,8 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SecKill.Windows"
         mc:Ignorable="d"
-        Title="SwitchMemberWindow" Height="250" Width="400">
+        Title="请选择成员" Height="250" Width="400">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="8*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <DataGrid x:Name="memberGrid" ItemsSource="{Binding }" AutoGenerateColumns="False" CanUserAddRows="False" Margin="5">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="编号" Binding="{Binding Id}"/>
+                <DataGridTextColumn Header="姓名" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="身份证号" Binding="{Binding IdCard}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <WrapPanel>
+        </WrapPanel>
         
     </Grid>
 </Window>

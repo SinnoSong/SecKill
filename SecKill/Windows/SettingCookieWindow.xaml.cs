@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using config = SecKill.Config.Config;
 
 namespace SecKill.Windows
@@ -30,6 +31,7 @@ namespace SecKill.Windows
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            // todo 关闭窗口后再此点击保存会导致重复添加键值
             if (string.IsNullOrEmpty(TKText.Text) || string.IsNullOrEmpty(CookieText.Text))
             {
                 MessageBox.Show("请输入tk和cookie", "提示");
@@ -39,6 +41,7 @@ namespace SecKill.Windows
                 config.RequestHeader = reqHeader.Text;
                 config.TK = TKText.Text;
                 calCookie(CookieText.Text);
+                Hide();
             }
         }
 
@@ -75,6 +78,12 @@ namespace SecKill.Windows
             {
                 config.Cookie.Add(item.Split('=')[0], item);
             }
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            e.Cancel = true;
+            this.Hide();
         }
     }
 }
