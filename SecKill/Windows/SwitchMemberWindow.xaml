@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SecKill.Windows"
         mc:Ignorable="d"
-        Title="请选择成员" Height="250" Width="400">
+        Title="请选择成员" Height="250" Width="500">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="8*"/>
@@ -15,10 +15,11 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="编号" Binding="{Binding Id}"/>
                 <DataGridTextColumn Header="姓名" Binding="{Binding Name}"/>
-                <DataGridTextColumn Header="身份证号" Binding="{Binding IdCard}"/>
+                <DataGridTextColumn Header="身份证号" Binding="{Binding IdCardNo}" Width="8*"/>
             </DataGrid.Columns>
         </DataGrid>
-        <WrapPanel>
+        <WrapPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button x:Name="Confirm" Content="确定" Click="Confirm_Click"/>
         </WrapPanel>
         
     </Grid>

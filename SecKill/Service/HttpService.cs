@@ -127,12 +127,12 @@ namespace SecKill.Service
             {
                 json = sr.ReadToEnd();
             }
-            var jsonObject = JsonConvert.DeserializeObject<JObject>(json);
-            if ("0000".Equals(jsonObject.GetValue("code")))
+            var jsonObject = JsonConvert.DeserializeObject<ResponseModel>(json);
+            if ("0000".Equals(jsonObject.code))
             {
-                return jsonObject.GetValue("data").ToString();
+                return JsonConvert.SerializeObject(jsonObject.data);
             }
-            throw new BusinessException(jsonObject.GetValue("code").ToString(), jsonObject.GetValue("msg").ToString());
+            throw new BusinessException(jsonObject.code,jsonObject.ok.ToString());
         }
 
         private Dictionary<string, string> GetCommonHeader()
@@ -154,7 +154,7 @@ namespace SecKill.Service
             {
                 foreach (var item in cookies)
                 {
-                    string cookie = item.Split(';')[0].Split(':')[1].Trim();
+                    string cookie = item.Split(';')[0].Split('=')[1].Trim();
                     config.Cookie.Add(cookie.Split('=')[0], cookie);
                 }
             }
