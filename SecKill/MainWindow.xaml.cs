@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using SecKill.Windows;
 using config = SecKill.Config.Config;
+using SecKill.Service;
+using System.Threading.Tasks;
 
 namespace SecKill
 {
@@ -14,9 +16,13 @@ namespace SecKill
     /// </summary>
     public partial class MainWindow : Window
     {
+        HttpService HttpService = new HttpService();
+        SecKillService SecKillService = new SecKillService(new HttpService());
+
         List<Area> areas = Areas.GetAreas();
         SettingCookieWindow settingWindow;
         SwitchMemberWindow MemberWindow;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -76,12 +82,28 @@ namespace SecKill
 
         private void RefreshVaccineList_Click(object sender, RoutedEventArgs e)
         {
-
+            List<VaccineList> vaccineLists = HttpService.GetVaccineLists();
+            DataGrid.DataContext = vaccineLists;
         }
 
         private void StartKill_Click(object sender, RoutedEventArgs e)
         {
+            if (config.Cookie.Count == 0)
+            {
+                MessageBox.Show("请配置cookie!!!");
+            }
+            if (DataGrid.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("请选择要抢购的疫苗");
+            }
 
+            VaccineList selectedItem = DataGrid.SelectedItem as VaccineList;
+            int id = selectedItem.Id;
+            string startIime = selectedItem.StartTime;
+            Task.Run(() =>
+            {
+                SecKillService.StartSecKill(id, startIime);
+            });
         }
     }
 }

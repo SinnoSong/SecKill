@@ -7,7 +7,7 @@ using SecKill.Model;
 
 namespace SecKill.Service
 {
-    internal class SecKillService
+    public class SecKillService
     {
         private HttpService httpService;
 

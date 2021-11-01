@@ -9,11 +9,10 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using config = SecKill.Config.Config;
-using System.Threading.Tasks;
 
 namespace SecKill.Service
 {
-    internal class HttpService
+    public class HttpService
     {
         private string baseUrl = "https://miaomiao.scmttec.com";
 
