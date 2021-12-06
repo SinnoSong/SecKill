@@ -18,9 +18,9 @@
                   SelectedValuePath="Id">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
-                <DataGridTextColumn Header="疫苗名称" Binding="{Binding Id}" Width="2*"/>
-                <DataGridTextColumn Header="医院名称" Binding="{Binding Id}" Width="3*"/>
-                <DataGridTextColumn Header="秒杀时间" Binding="{Binding Id}" Width="3*"/>
+                <DataGridTextColumn Header="疫苗名称" Binding="{Binding VaccineName}" Width="2*"/>
+                <DataGridTextColumn Header="医院名称" Binding="{Binding Name}" Width="3*"/>
+                <DataGridTextColumn Header="秒杀时间" Binding="{Binding StartTime}" Width="3*"/>
             </DataGrid.Columns>
         </DataGrid>
         <DockPanel Grid.Column="1" Grid.RowSpan="3">
