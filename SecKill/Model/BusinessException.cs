@@ -6,10 +6,15 @@ namespace SecKill.Model
     {
         public string Code { get; set; }
         public string Msg { get; set; }
-
         public BusinessException(string code, string msg)
         {
             Code = code;
+            Msg = msg;
+        }
+
+        public BusinessException(string msg)
+        {
+            Code = null;
             Msg = msg;
         }
     }

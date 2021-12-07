@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SecKill.Model;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -27,7 +28,24 @@ namespace SecKill
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             Exception ex = e.Exception;
-            MessageBox.Show(ex.Message, ex.StackTrace);
+            if (ex is BusinessException)
+            {
+                var exception = ex as BusinessException;
+                string msg;
+                if (exception.Code == null)
+                {
+                    msg = $"Msg:{exception.Msg}";
+                }
+                else
+                {
+                    msg = $"Code:{exception.Code},Msg:{exception.Msg}";
+                }
+                MessageBox.Show(msg);
+            }
+            else
+            {
+                MessageBox.Show(ex.StackTrace, ex.Message);
+            }
             e.Handled = true;
         }
 

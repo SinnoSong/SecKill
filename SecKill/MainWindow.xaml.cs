@@ -90,11 +90,11 @@ namespace SecKill
         {
             if (config.Cookie.Count == 0)
             {
-                MessageBox.Show("请配置cookie!!!");
+                throw new BusinessException("请配置cookie!!!");
             }
             if (DataGrid.SelectedItems.Count == 0)
             {
-                MessageBox.Show("请选择要抢购的疫苗");
+                throw new BusinessException("请选择要抢购的疫苗");
             }
 
             VaccineList selectedItem = DataGrid.SelectedItem as VaccineList;

@@ -87,7 +87,7 @@ namespace SecKill.Service
         {
             if (config.Cookie.Count == 0)
             {
-                throw new BusinessException("400", "请先配置cookie");
+                throw new BusinessException("请先配置cookie");
             }
         }
 
@@ -137,6 +137,10 @@ namespace SecKill.Service
         private Dictionary<string, string> GetCommonHeader()
         {
             Dictionary<string, string> commHeader = new Dictionary<string, string>();
+            if (config.TK == null || config.Cookie.Count == 0)
+            {
+                throw new BusinessException("请先设置Cookie!");
+            }
             commHeader.Add("tk", config.TK);
             if (config.Cookie.Count > 0)
             {
