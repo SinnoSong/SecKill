@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -13,5 +9,50 @@ namespace SecKill
     /// </summary>
     public partial class App : Application
     {
+        private void Applicatoin_Startup(object sender, StartupEventArgs s)
+        {
+            Current.StartupUri = new Uri("MainWindow.xaml", UriKind.Relative);
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+        }
+
+        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            Exception exception = e.Exception;
+            MessageBox.Show(exception.Message, exception.StackTrace);
+            e.SetObserved();
+        }
+
+        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            Exception ex = e.Exception;
+            MessageBox.Show(ex.Message, ex.StackTrace);
+            e.Handled = true;
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = e.ExceptionObject as Exception;
+            if (ex != null)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+        private void OnExceptionHandler(Exception e)
+        {
+            if (e != null)
+            {
+                string errorMsg = "";
+                if (e.InnerException != null)
+                {
+                    errorMsg += $"InnerException:{e.InnerException.Message}\n{e.InnerException.StackTrace}";
+                }
+                errorMsg += $"{e.Message}\n {e.StackTrace}";
+                MessageBox.Show(errorMsg);
+            }
+        }
     }
 }

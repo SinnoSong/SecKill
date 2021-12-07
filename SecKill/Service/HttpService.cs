@@ -87,7 +87,7 @@ namespace SecKill.Service
         {
             if (config.Cookie.Count == 0)
             {
-                throw new Exception("请先配置cookie");
+                throw new BusinessException("400", "请先配置cookie");
             }
         }
 
@@ -131,7 +131,7 @@ namespace SecKill.Service
             {
                 return JsonConvert.SerializeObject(jsonObject.data);
             }
-            throw new BusinessException(jsonObject.code,jsonObject.ok.ToString());
+            throw new BusinessException(jsonObject.code, jsonObject.ok.ToString());
         }
 
         private Dictionary<string, string> GetCommonHeader()
