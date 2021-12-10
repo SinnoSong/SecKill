@@ -104,6 +104,7 @@ namespace SecKill
             {
                 SecKillService.StartSecKill(id, startIime);
             });
+            MessageBox.Show("设置抢购成功");
         }
     }
 }

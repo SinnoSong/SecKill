@@ -29,6 +29,10 @@ namespace SecKill.Model
             public string modifyTime { get; set; }
             public int yn { get; set; }
             public int idCardType { get; set; }
+
+            public string vaccineCode { get; set; }
+            public string vaccineName { get; set; }
+            public string startTime { get; set; }
         }
     }
 }
