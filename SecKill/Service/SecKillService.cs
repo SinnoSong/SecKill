@@ -18,9 +18,9 @@ namespace SecKill.Service
 
         public void StartSecKill(int vaccineId, string startDateStr)
         {
-            long startDate = Convert.ToDateTime(startDateStr).ToFileTime();
+            long startDate = (Convert.ToDateTime(startDateStr).ToUniversalTime().Ticks - 621355968000000000) / 10000;
 
-            long now = DateTime.Now.ToFileTime();
+            long now = (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000;
             if (now + 5000 < startDate)
             {
                 Console.WriteLine("还未到获取st时间，等待中。。。");
@@ -124,7 +124,8 @@ namespace SecKill.Service
                 {
                     Console.WriteLine("未知异常：" + exception.Message);
                 }
-                if (DateTime.Now.ToFileTime() > startTime + 10 * 60 * 1000 || config.Success.HasValue)
+                long now = (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000;
+                if (now > startTime + 10 * 1000 || config.Success.HasValue)
                 {
                     break;
                 }
