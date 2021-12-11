@@ -1,6 +1,5 @@
 九价秒杀工具WPF版，代码主要业务逻辑参考jva项目：https://github.com/lyrric/seckill 。
 
-目前存在问题，秒杀获取疫苗List解析问题，待解决。
 
 **基于.net frameword4.7.2开发，win10 1803版之后版本直接可以运行，之前版本的win10、win7、win8.1需要安装.net framework 4.7.2运行**
 
