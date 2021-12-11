@@ -31,7 +31,6 @@ namespace SecKill.Windows
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            // todo 关闭窗口后再此点击保存会导致重复添加键值
             if (string.IsNullOrEmpty(TKText.Text) || string.IsNullOrEmpty(CookieText.Text))
             {
                 MessageBox.Show("请输入tk和cookie", "提示");

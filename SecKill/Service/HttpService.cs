@@ -69,7 +69,6 @@ namespace SecKill.Service
         /// <returns></returns>
         public string GetSt(string vaccineId)
         {
-            // todo json转换出现异常
             string path = baseUrl + "/seckill/seckill/checkstock2.do";
             Dictionary<string, string> urlParams = new Dictionary<string, string>();
             urlParams.Add("id", vaccineId);
