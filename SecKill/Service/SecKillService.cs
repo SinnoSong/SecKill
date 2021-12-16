@@ -31,6 +31,7 @@ namespace SecKill.Service
                 // 提前5秒钟获取服务器时间戳接口，计算加密用
                 try
                 {
+                    // todo 获取加密参数超时问题
                     Console.WriteLine("Thread ID：main,请求获取加密参数ST");
                     config.ST = httpService.GetSt(vaccineId.ToString());
                     Console.WriteLine($"Thread ID：main，成功获取加密参数st:{config.ST}");
