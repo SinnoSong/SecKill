@@ -33,6 +33,8 @@ namespace SecKill.Model
             public string vaccineCode { get; set; }
             public string vaccineName { get; set; }
             public string startTime { get; set; }
+            public int stock { get; set; }
+            public ulong st { get; set; }
         }
     }
 }
