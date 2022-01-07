@@ -126,12 +126,12 @@ namespace SecKill.Service
             {
                 json = sr.ReadToEnd();
             }
-            var jsonObject = JsonConvert.DeserializeObject<ResponseModel>(json);
-            if ("0000".Equals(jsonObject.code))
+            var jsonObject = JObject.Parse(json);
+            if ("0000".Equals(jsonObject.SelectToken("code").ToString()))
             {
-                return JsonConvert.SerializeObject(jsonObject.data);
+                return jsonObject.SelectToken("data").ToString();
             }
-            throw new BusinessException(jsonObject.code, jsonObject.ok.ToString());
+            throw new BusinessException(jsonObject.SelectToken("code").ToString(), jsonObject.SelectToken("ok").ToString());
         }
 
         private Dictionary<string, string> GetCommonHeader()
