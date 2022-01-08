@@ -222,6 +222,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\BusinessException.cs" />
+    <Compile Include="Model\LogModel.cs" />
     <Compile Include="Service\HttpService.cs" />
     <Compile Include="Service\SecKillService.cs" />
     <Compile Include="Windows\SettingCookieWindow.xaml.cs">

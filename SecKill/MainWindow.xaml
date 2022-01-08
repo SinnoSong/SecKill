@@ -3,11 +3,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:model="clr-namespace:SecKill.Model"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <model:LogModel x:Key="logModel"/>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="8*"/>
+            <ColumnDefinition Width="5*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -25,8 +29,8 @@
         </DataGrid>
         <DockPanel Grid.Column="1" Grid.RowSpan="3">
             <TextBlock DockPanel.Dock="Top"> 日志记录：</TextBlock>
-            <TextBox Margin="5" Background="LightGray">
-            </TextBox>
+            <TextBlock Text="{Binding Source={StaticResource logModel}, Path=LogStr}" Margin="5" Background="AliceBlue">
+            </TextBlock>
         </DockPanel>
         <WrapPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="5">

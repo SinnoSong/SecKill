@@ -23,7 +23,7 @@ namespace SecKill.Service
             long now = (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000;
             if (now + 5000 < startDate)
             {
-                Console.WriteLine("还未到获取st时间，等待中。。。");
+                LogModel.UpdateLogStr("还未到获取st时间，等待中。。。");
                 Thread.Sleep((int)(startDate - now - 5000));
             }
             while (true)
@@ -32,28 +32,28 @@ namespace SecKill.Service
                 try
                 {
                     // todo 获取加密参数超时问题
-                    Console.WriteLine("Thread ID：main,请求获取加密参数ST");
+                    LogModel.UpdateLogStr("Thread ID：main,请求获取加密参数ST");
                     config.ST = httpService.GetSt(vaccineId.ToString());
-                    Console.WriteLine($"Thread ID：main，成功获取加密参数st:{config.ST}");
+                    LogModel.UpdateLogStr($"Thread ID：main，成功获取加密参数st:{config.ST}");
                     break;
                 }
                 catch (TimeoutException)
                 {
-                    Console.WriteLine("Thread ID：main，获取st失败，超时");
+                    LogModel.UpdateLogStr("Thread ID：main，获取st失败，超时");
                 }
                 catch (BusinessException e)
                 {
-                    Console.WriteLine($"Thread ID:main，获取st失败：{e.Msg}");
+                    LogModel.UpdateLogStr($"Thread ID:main，获取st失败：{e.Msg}");
                 }
                 catch (Exception exception)
                 {
-                    Console.WriteLine($"Thread ID:main，获取st失败：{exception.Message}");
+                    LogModel.UpdateLogStr($"Thread ID:main，获取st失败：{exception.Message}");
                 }
             }
             now = DateTime.Now.ToFileTime();
             if (now + 500 < startDate)
             {
-                Console.WriteLine($"获取st参数成功，还未到秒杀开始时间，等待中。。。。。。");
+                LogModel.UpdateLogStr($"获取st参数成功，还未到秒杀开始时间，等待中。。。。。。");
                 Thread.Sleep((int)(startDate - now - 500));
             }
 
@@ -70,16 +70,16 @@ namespace SecKill.Service
             {
                 if (config.Success.Value)
                 {
-                    Console.WriteLine("抢购成功，请登录秒苗小程序查看");
+                    LogModel.UpdateLogStr("抢购成功，请登录秒苗小程序查看");
                 }
                 else
                 {
-                    Console.WriteLine("抢购失败");
+                    LogModel.UpdateLogStr("抢购失败");
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                LogModel.UpdateLogStr(e.Message);
             }
         }
 
@@ -97,20 +97,20 @@ namespace SecKill.Service
                 {
                     if (resetSt)
                     {
-                        Console.WriteLine($"Thread ID:{id},请求获取加密参数ST");
+                        LogModel.UpdateLogStr($"Thread ID:{id},请求获取加密参数ST");
                         config.ST = httpService.GetSt(vaccineId.ToString());
-                        Console.WriteLine($"Thread ID:{id},成功获取加密参数ST");
+                        LogModel.UpdateLogStr($"Thread ID:{id},成功获取加密参数ST");
                     }
-                    Console.WriteLine($"Thread ID:{id},秒杀请求");
+                    LogModel.UpdateLogStr($"Thread ID:{id},秒杀请求");
                     httpService.SecKill(vaccineId.ToString(), "1", config.MemberId.ToString(),
                         config.IdCard, config.ST);
                     config.Success = true;
-                    Console.WriteLine($"Thread ID:{id},抢购成功");
+                    LogModel.UpdateLogStr($"Thread ID:{id},抢购成功");
                     break;
                 }
                 catch (BusinessException e)
                 {
-                    Console.WriteLine($"Thread ID:{id},抢购失败：{e.Msg}");
+                    LogModel.UpdateLogStr($"Thread ID:{id},抢购失败：{e.Msg}");
                     if (e.Msg.Contains("没抢到"))
                     {
                         config.Success = false;
@@ -119,11 +119,11 @@ namespace SecKill.Service
                 }
                 catch (TimeoutException)
                 {
-                    Console.WriteLine($"Thread Id :{Thread.CurrentThread.ManagedThreadId},抢购失败：超时了");
+                    LogModel.UpdateLogStr($"Thread Id :{Thread.CurrentThread.ManagedThreadId},抢购失败：超时了");
                 }
                 catch (Exception exception)
                 {
-                    Console.WriteLine("未知异常：" + exception.Message);
+                    LogModel.UpdateLogStr("未知异常：" + exception.Message);
                 }
                 long now = (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000;
                 if (now > startTime + 10 * 1000 || config.Success.HasValue)

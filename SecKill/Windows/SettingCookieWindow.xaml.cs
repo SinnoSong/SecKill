@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using SecKill.Model;
+using System.ComponentModel;
 using System.Windows;
 using config = SecKill.Config.Config;
 
@@ -58,7 +59,6 @@ namespace SecKill.Windows
             {
                 return null;
             }
-            System.Console.WriteLine(reqHeader.Length);
             data[0] = reqHeader.Substring(start + "tk: ".Length, end - start - "tk: ".Length);
             start = reqHeader.IndexOf("Cookie: ");
             end = reqHeader.IndexOf("\n", start);

@@ -48,7 +48,9 @@ namespace SecKill
             {
                 config.RegionCode = cityName;
                 Area city = (Area)City.SelectedItem;
-                MessageBox.Show($"已选择区域:{city.Name}");
+                string message = $"已选择区域:{city.Name}";
+                MessageBox.Show(message);
+                LogModel.UpdateLogStr(message);
             }
         }
 
