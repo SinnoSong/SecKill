@@ -86,6 +86,7 @@ namespace SecKill
         {
             List<VaccineList> vaccineLists = HttpService.GetVaccineLists();
             DataGrid.DataContext = vaccineLists;
+            MessageBox.Show("疫苗列表刷新成功！");
         }
 
         private void StartKill_Click(object sender, RoutedEventArgs e)

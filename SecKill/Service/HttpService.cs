@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SecKill.Model;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -158,7 +157,11 @@ namespace SecKill.Service
                 foreach (var item in cookies)
                 {
                     string cookie = item.Split(';')[0].Split('=')[1].Trim();
-                    config.Cookie.Add(cookie.Split('=')[0], cookie);
+                    var cookieKey = cookie.Split('=')[0];
+                    if (!config.Cookie.ContainsKey(cookieKey))
+                    {
+                        config.Cookie.Add(cookieKey, cookie);
+                    }
                 }
             }
         }
