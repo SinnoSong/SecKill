@@ -31,7 +31,6 @@ namespace SecKill.Service
                 // 提前5秒钟获取服务器时间戳接口，计算加密用
                 try
                 {
-                    // todo 获取加密参数超时问题
                     LogModel.UpdateLogStr("Thread ID：main,请求获取加密参数ST");
                     config.ST = httpService.GetSt(vaccineId.ToString());
                     LogModel.UpdateLogStr($"Thread ID：main，成功获取加密参数st:{config.ST}");
@@ -51,10 +50,10 @@ namespace SecKill.Service
                 }
             }
             now = DateTime.Now.ToFileTime();
-            if (now + 500 < startDate)
+            if (now + 200 < startDate)
             {
                 LogModel.UpdateLogStr($"获取st参数成功，还未到秒杀开始时间，等待中。。。。。。");
-                Thread.Sleep((int)(startDate - now - 500));
+                Thread.Sleep((int)(startDate - now - 200));
             }
 
             // 添加到Task中

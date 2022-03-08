@@ -130,7 +130,7 @@ namespace SecKill.Service
             {
                 return jsonObject.SelectToken("data").ToString();
             }
-            throw new BusinessException(jsonObject.SelectToken("code").ToString(), jsonObject.SelectToken("ok").ToString());
+            throw new BusinessException(jsonObject.SelectToken("code").ToString(), jsonObject.SelectToken("msg").ToString());
         }
 
         private Dictionary<string, string> GetCommonHeader()

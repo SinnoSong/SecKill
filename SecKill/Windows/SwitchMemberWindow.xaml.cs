@@ -15,6 +15,7 @@ namespace SecKill.Windows
         HttpService HttpService { get; set; }
         public SwitchMemberWindow()
         {
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
             InitializeComponent();
             InitialData();
         }

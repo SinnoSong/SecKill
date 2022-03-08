@@ -8,24 +8,23 @@
         Title="SettingCookieWindow" Height="450" Width="800">
     <Grid Background="Azure">
         <Grid.RowDefinitions>
-            <RowDefinition Height="6*"/>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.5*"/>
             <RowDefinition Height="2*"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Margin="10" Grid.ColumnSpan="2">
-            <TextBox x:Name="reqHeader" IsReadOnly="True"></TextBox>
+        <StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Label>请填写token 和 cookie</Label>
         </StackPanel>
         <Label Grid.Row="1" HorizontalContentAlignment="Center">TK:</Label>
         <TextBox x:Name="TKText" Grid.Row="1" Grid.Column="2" Margin="5"></TextBox>
-        <Label Grid.Row="2" HorizontalContentAlignment="Center">Cookie:</Label>
-        <TextBox x:Name="CookieText" Grid.Row="2" Grid.Column="2" Width="Auto" Margin="5"></TextBox>
+        <Label Grid.Row="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Cookie:</Label>
+        <TextBox x:Name="CookieText" Grid.Row="2" Grid.Column="2" Width="Auto" Margin="5" TextWrapping="Wrap"></TextBox>
         <WrapPanel Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="2">
-            <Button x:Name="parseButton" Margin="5 5 20 5" Padding="10" Click="ParseButton_Click">解析</Button>
             <Button x:Name="saveButton" Margin="20 5 5 5" Padding="10" Click="SaveButton_Click">保存</Button>
         </WrapPanel>
     </Grid>

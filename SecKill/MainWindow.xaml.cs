@@ -25,6 +25,7 @@ namespace SecKill
 
         public MainWindow()
         {
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
             InitializeComponent();
             Province.ItemsSource = areas;
         }
@@ -79,6 +80,7 @@ namespace SecKill
                 };
                 MemberWindow = switchMemberWindow;
             }
+            
             MemberWindow.Show();
         }
 
