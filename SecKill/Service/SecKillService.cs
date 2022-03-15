@@ -1,9 +1,9 @@
-﻿using System;
+﻿using SecKill.Model;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using config = SecKill.Config.Config;
-using SecKill.Model;
 
 namespace SecKill.Service
 {
@@ -50,19 +50,19 @@ namespace SecKill.Service
                 }
             }
             now = DateTime.Now.ToFileTime();
-            if (now + 200 < startDate)
+            if (now + 50 < startDate)
             {
                 LogModel.UpdateLogStr($"获取st参数成功，还未到秒杀开始时间，等待中。。。。。。");
-                Thread.Sleep((int)(startDate - now - 200));
+                Thread.Sleep((int)(startDate - now - 50));
             }
 
             // 添加到Task中
             Task.Factory.StartNew(() => SecKillTask(false, vaccineId, startDate));
-            Thread.Sleep(200);
+            Thread.Sleep(100);
             Task.Factory.StartNew(() => SecKillTask(true, vaccineId, startDate));
-            Thread.Sleep(200);
+            Thread.Sleep(100);
             Task.Factory.StartNew(() => SecKillTask(true, vaccineId, startDate));
-            Thread.Sleep(200);
+            Thread.Sleep(100);
             Task.Factory.StartNew(() => SecKillTask(false, vaccineId, startDate));
 
             try
