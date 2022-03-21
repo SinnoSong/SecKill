@@ -20,7 +20,7 @@ namespace SecKill.Service
         {
             long startDate = (Convert.ToDateTime(startDateStr).ToUniversalTime().Ticks - 621355968000000000) / 10000;
 
-            long now = (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000;
+            long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             if (now + 5000 < startDate)
             {
                 LogModel.UpdateLogStr("还未到获取st时间，等待中。。。");
@@ -49,7 +49,7 @@ namespace SecKill.Service
                     LogModel.UpdateLogStr($"Thread ID:main，获取st失败：{exception.Message}");
                 }
             }
-            now = DateTime.Now.ToFileTime();
+            now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             if (now + 50 < startDate)
             {
                 LogModel.UpdateLogStr($"获取st参数成功，还未到秒杀开始时间，等待中。。。。。。");
@@ -125,7 +125,7 @@ namespace SecKill.Service
                     LogModel.UpdateLogStr("未知异常：" + exception.Message);
                 }
                 long now = (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000;
-                if (now > startTime + 10 * 1000 || config.Success.HasValue)
+                if (now > startTime + 30 * 1000 || config.Success.HasValue)
                 {
                     break;
                 }
