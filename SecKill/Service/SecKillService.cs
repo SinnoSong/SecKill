@@ -58,11 +58,11 @@ namespace SecKill.Service
 
             // 添加到Task中
             Task.Factory.StartNew(() => SecKillTask(false, vaccineId, startDate));
-            Thread.Sleep(100);
+            Thread.Sleep(200);
             Task.Factory.StartNew(() => SecKillTask(true, vaccineId, startDate));
-            Thread.Sleep(100);
+            Thread.Sleep(200);
             Task.Factory.StartNew(() => SecKillTask(true, vaccineId, startDate));
-            Thread.Sleep(100);
+            Thread.Sleep(200);
             Task.Factory.StartNew(() => SecKillTask(false, vaccineId, startDate));
 
             try
