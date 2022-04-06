@@ -16,12 +16,9 @@ namespace SecKill
     /// </summary>
     public partial class MainWindow : Window
     {
-        HttpService HttpService = new HttpService();
-        SecKillService SecKillService = new SecKillService(new HttpService());
-
-        List<Area> areas = Areas.GetAreas();
-        SettingCookieWindow settingWindow;
-        SwitchMemberWindow MemberWindow;
+        private readonly List<Area> areas = Areas.GetAreas();
+        private SettingCookieWindow settingWindow;
+        private SwitchMemberWindow MemberWindow;
 
         public MainWindow()
         {
@@ -84,11 +81,18 @@ namespace SecKill
             MemberWindow.Show();
         }
 
-        private void RefreshVaccineList_Click(object sender, RoutedEventArgs e)
+        private async void RefreshVaccineList_Click(object sender, RoutedEventArgs e)
         {
-            List<VaccineList> vaccineLists = HttpService.GetVaccineLists();
+            List<VaccineList> vaccineLists = await HttpService.GetVaccineLists();
             DataGrid.DataContext = vaccineLists;
-            MessageBox.Show("疫苗列表刷新成功！");
+            if (vaccineLists.Count() == 0)
+            {
+                MessageBox.Show("该地区目前没有秒杀！");
+            }
+            else
+            {
+                MessageBox.Show("疫苗列表刷新成功！");
+            }
         }
 
         private void StartKill_Click(object sender, RoutedEventArgs e)
@@ -105,9 +109,9 @@ namespace SecKill
             VaccineList selectedItem = DataGrid.SelectedItem as VaccineList;
             int id = selectedItem.Id;
             string startIime = selectedItem.StartTime;
-            Task.Run(() =>
+            Task.Factory.StartNew(async () =>
             {
-                SecKillService.StartSecKill(id, startIime);
+                await SecKillService.StartSecKill(id, startIime);
             });
             MessageBox.Show("设置抢购成功");
         }

@@ -16,7 +16,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="8*"/>
-            <RowDefinition/>
+            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <DataGrid x:Name="DataGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="5"
                   SelectedValuePath="Id">
@@ -33,18 +33,20 @@
             </TextBlock>
         </DockPanel>
         <WrapPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="5">
-                <Button x:Name="SettingCookie" Click="SettingCookie_Click" Margin="5">设置Cookie</Button>
-                <Button x:Name="SwitchMember" Click="SwitchMember_Click" Margin="5">选择成员</Button>
-                <Button x:Name="RefreshVaccineList" Click="RefreshVaccineList_Click" Margin="5">刷新疫苗列表</Button>
-                <Button x:Name="StartKill" Click="StartKill_Click" Margin="5">开始</Button>
-            </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
+                <Label Content="选择区域"></Label>
                 <ComboBox x:Name="Province" Width="150" DisplayMemberPath="Name" SelectedValuePath="Value" IsReadOnly="True"
                       HorizontalAlignment="Left" VerticalAlignment="Top" SelectionChanged="City_SelectionChanged" Margin="5"/>
                 <ComboBox x:Name="City" Width="150" DisplayMemberPath="Name" SelectedValuePath="Value" Margin="5"/>
                 <Button x:Name="Confirm" Click="Confirm_Click" Margin="5">确定</Button>
             </StackPanel>
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="3">
+                <Button x:Name="SettingCookie" Click="SettingCookie_Click" Margin="5">设置Cookie</Button>
+                <Button x:Name="SwitchMember" Click="SwitchMember_Click" Margin="5">选择成员</Button>
+                <Button x:Name="RefreshVaccineList" Click="RefreshVaccineList_Click" Margin="5">刷新疫苗列表</Button>
+                <Button x:Name="StartKill" Click="StartKill_Click" Margin="5">开始秒杀</Button>
+            </StackPanel>
+            
         </WrapPanel>
     </Grid>
 </Window>

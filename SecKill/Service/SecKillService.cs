@@ -1,6 +1,5 @@
 ﻿using SecKill.Model;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using config = SecKill.Config.Config;
@@ -9,14 +8,8 @@ namespace SecKill.Service
 {
     public class SecKillService
     {
-        private HttpService httpService;
 
-        public SecKillService(HttpService httpService)
-        {
-            this.httpService = httpService;
-        }
-
-        public void StartSecKill(int vaccineId, string startDateStr)
+        public static async Task StartSecKill(int vaccineId, string startDateStr)
         {
             long startDate = (Convert.ToDateTime(startDateStr).ToUniversalTime().Ticks - 621355968000000000) / 10000;
 
@@ -31,22 +24,22 @@ namespace SecKill.Service
                 // 提前5秒钟获取服务器时间戳接口，计算加密用
                 try
                 {
-                    LogModel.UpdateLogStr("Thread ID：main,请求获取加密参数ST");
-                    config.ST = httpService.GetSt(vaccineId.ToString());
-                    LogModel.UpdateLogStr($"Thread ID：main，成功获取加密参数st:{config.ST}");
+                    LogModel.UpdateLogStr($"线程名称：{Thread.CurrentThread.Name},请求获取加密参数ST");
+                    config.ST = await HttpService.GetSt(vaccineId.ToString());
+                    LogModel.UpdateLogStr($"线程名称：{Thread.CurrentThread.Name}，成功获取加密参数st:{config.ST}");
                     break;
                 }
                 catch (TimeoutException)
                 {
-                    LogModel.UpdateLogStr("Thread ID：main，获取st失败，超时");
+                    LogModel.UpdateLogStr($"线程名称：{Thread.CurrentThread.Name}，获取st失败，超时");
                 }
                 catch (BusinessException e)
                 {
-                    LogModel.UpdateLogStr($"Thread ID:main，获取st失败：{e.Msg}");
+                    LogModel.UpdateLogStr($"线程名称：{Thread.CurrentThread.Name}，获取st失败：{e.Msg}");
                 }
                 catch (Exception exception)
                 {
-                    LogModel.UpdateLogStr($"Thread ID:main，获取st失败：{exception.Message}");
+                    LogModel.UpdateLogStr($"线程名称：{Thread.CurrentThread.Name}，获取st失败：{exception.Message}");
                 }
             }
             now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
@@ -57,13 +50,13 @@ namespace SecKill.Service
             }
 
             // 添加到Task中
-            Task.Factory.StartNew(() => SecKillTask(false, vaccineId, startDate));
-            Thread.Sleep(200);
-            Task.Factory.StartNew(() => SecKillTask(true, vaccineId, startDate));
-            Thread.Sleep(200);
-            Task.Factory.StartNew(() => SecKillTask(true, vaccineId, startDate));
-            Thread.Sleep(200);
-            Task.Factory.StartNew(() => SecKillTask(false, vaccineId, startDate));
+            await Task.Factory.StartNew(() => SecKillTask(false, vaccineId, startDate));
+            Thread.Sleep(100);
+            await Task.Factory.StartNew(() => SecKillTask(true, vaccineId, startDate));
+            Thread.Sleep(100);
+            await Task.Factory.StartNew(() => SecKillTask(true, vaccineId, startDate));
+            Thread.Sleep(100);
+            await Task.Factory.StartNew(() => SecKillTask(false, vaccineId, startDate));
 
             try
             {
@@ -82,12 +75,7 @@ namespace SecKill.Service
             }
         }
 
-        internal List<VaccineList> GetVaccineLists()
-        {
-            return httpService.GetVaccineLists();
-        }
-
-        private void SecKillTask(bool resetSt, int vaccineId, long startTime)
+        private static async void SecKillTask(bool resetSt, int vaccineId, long startTime)
         {
             do
             {
@@ -97,11 +85,11 @@ namespace SecKill.Service
                     if (resetSt)
                     {
                         LogModel.UpdateLogStr($"Thread ID:{id},请求获取加密参数ST");
-                        config.ST = httpService.GetSt(vaccineId.ToString());
+                        config.ST = await HttpService.GetSt(vaccineId.ToString());
                         LogModel.UpdateLogStr($"Thread ID:{id},成功获取加密参数ST");
                     }
                     LogModel.UpdateLogStr($"Thread ID:{id},秒杀请求");
-                    httpService.SecKill(vaccineId.ToString(), "1", config.MemberId.ToString(),
+                    await HttpService.SecKill(vaccineId.ToString(), "1", config.MemberId.ToString(),
                         config.IdCard, config.ST);
                     config.Success = true;
                     LogModel.UpdateLogStr($"Thread ID:{id},抢购成功");

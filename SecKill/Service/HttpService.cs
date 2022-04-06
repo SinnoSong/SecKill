@@ -2,18 +2,20 @@
 using Newtonsoft.Json.Linq;
 using SecKill.Model;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using config = SecKill.Config.Config;
 
 namespace SecKill.Service
 {
     public class HttpService
     {
-        private string baseUrl = "https://miaomiao.scmttec.com";
+        private const string BaseUrl = "https://miaomiao.scmttec.com";
+        private static readonly HttpClient HttpClient = GetHttpClient();
 
         /// <summary>
         /// 获取秒杀资格
@@ -24,41 +26,50 @@ namespace SecKill.Service
         /// <param name="idCard"></param>
         /// <param name="st"></param>
         /// <returns></returns>
-        public string SecKill(string seckillId, string vaccineIndex, string linkmanId, string idCard, string st)
+        public static async Task<string> SecKill(string seckillId, string vaccineIndex, string linkmanId, string idCard, string st)
         {
-            string path = baseUrl + "/seckill/seckill/subscribe.do";
-            Dictionary<string, string> urlParams = new Dictionary<string, string>();
-            urlParams.Add("seckillId", seckillId);
-            urlParams.Add("vaccineIndex", vaccineIndex);
-            urlParams.Add("linkmanId", linkmanId);
-            urlParams.Add("idCardNo", idCard);
-            Dictionary<string, string> extHeaders = new Dictionary<string, string>();
-            extHeaders.Add("ecc-hs", EccHs(seckillId, st));
-            return Get(path, urlParams, extHeaders);
+            string path = BaseUrl + "/seckill/seckill/subscribe.do";
+            Dictionary<string, string> urlParams = new Dictionary<string, string>
+            {
+                { "seckillId", seckillId },
+                { "vaccineIndex", vaccineIndex },
+                { "linkmanId", linkmanId },
+                { "idCardNo", idCard }
+            };
+            Dictionary<string, string> extHeaders = new Dictionary<string, string>
+            {
+                { "ecc-hs", EccHs(seckillId, st) }
+            };
+            return await SendRequest(HttpMethod.Get, path, queryPairs: urlParams, headers: extHeaders);
         }
         /// <summary>
         /// 获取疫苗列表
         /// </summary>
         /// <returns></returns>
-        public List<VaccineList> GetVaccineLists()
+        public static async Task<List<VaccineList>> GetVaccineLists()
         {
-            HasAvailableConfig();
-            string path = baseUrl + "/seckill/seckill/list.do";
-            Dictionary<string, string> urlParams = new Dictionary<string, string>();
-            urlParams.Add("offset", "0");
-            urlParams.Add("limit", "100");
-            urlParams.Add("regionCode", config.RegionCode);
-            string json = Get(path, urlParams, null);
+            if (config.Cookie.Count == 0)
+            {
+                throw new BusinessException("请先配置cookie");
+            }
+            string path = BaseUrl + "/seckill/seckill/list.do";
+            Dictionary<string, string> urlParams = new Dictionary<string, string>
+            {
+                { "offset", "0" },
+                { "limit", "100" },
+                { "regionCode", config.RegionCode }
+            };
+            string json = await SendRequest(HttpMethod.Get, path, queryPairs: urlParams);
             return JsonConvert.DeserializeObject<List<VaccineList>>(json);
         }
         /// <summary>
         /// 获取接种人信息
         /// </summary>
         /// <returns></returns>
-        public List<Member> GetMembers()
+        public async Task<List<Member>> GetMembers()
         {
-            string path = baseUrl + "/seckill/linkman/findByUserId.do";
-            string json = Get(path, null, null);
+            string path = BaseUrl + "/seckill/linkman/findByUserId.do";
+            string json = await SendRequest(HttpMethod.Get, path);
             return JsonConvert.DeserializeObject<List<Member>>(json);
         }
         /// <summary>
@@ -66,74 +77,62 @@ namespace SecKill.Service
         /// </summary>
         /// <param name="vaccineId"></param>
         /// <returns></returns>
-        public string GetSt(string vaccineId)
+        public static async Task<string> GetSt(string vaccineId)
         {
-            string path = baseUrl + "/seckill/seckill/checkstock2.do";
-            Dictionary<string, string> urlParams = new Dictionary<string, string>();
-            urlParams.Add("id", vaccineId);
-            return JsonConvert.DeserializeObject<JObject>(Get(path, urlParams, null)).GetValue("st").ToString();
-        }
-
-        public void Log(string vaccineId)
-        {
-            string path = baseUrl + "/seckill/seckill/log.do";
-            Dictionary<string, string> urlParams = new Dictionary<string, string>();
-            urlParams.Add("id", vaccineId);
-            Get(path, urlParams, null);
-        }
-
-        private void HasAvailableConfig()
-        {
-            if (config.Cookie.Count == 0)
+            string path = BaseUrl + "/seckill/seckill/checkstock2.do";
+            Dictionary<string, string> urlParams = new Dictionary<string, string>
             {
-                throw new BusinessException("请先配置cookie");
-            }
+                { "id", vaccineId }
+            };
+            return JsonConvert.DeserializeObject<JObject>(await SendRequest(HttpMethod.Get, path, queryPairs: urlParams)).GetValue("st").Value<string>();
         }
 
-        private string Get(string path, Dictionary<string, string> urlParams, Dictionary<string, string> headers)
+        private static async Task<string> SendRequest(HttpMethod method, string queryUrl, HttpContent httpContent = null, Dictionary<string, string> queryPairs = null, Dictionary<string, string> headers = null)
         {
-            if (urlParams != null && urlParams.Count != 0)
+            if (queryPairs != null)
             {
-                StringBuilder paramStr = new StringBuilder("?");
-                urlParams.ToList().ForEach(param => paramStr.Append(param.Key).Append("=").Append(param.Value).Append("&"));
-                path = path + paramStr.ToString();
-                if (path.EndsWith("&"))
+                StringBuilder queryParams = new StringBuilder("?");
+                foreach (KeyValuePair<string, string> pair in queryPairs)
                 {
-                    path = path.Substring(0, path.Length - 1);
+                    queryParams.Append(pair.Key + "=" + pair.Value + "&");
                 }
+                queryParams.Remove(queryParams.Length - 1, 1);
+                queryUrl += queryParams.ToString();
             }
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(path);
-            request.Method = "GET";
-            headers = GetCommonHeader();
-
-            foreach (KeyValuePair<string, string> kvp in headers)
+            var request = new HttpRequestMessage(method, queryUrl);
+            request.Headers.Add("ContinueTimeout", "2500");
+            request.Headers.Add("Timeout", "2500");
+            foreach (KeyValuePair<string, string> kvp in GetCommonHeader())
             {
                 request.Headers.Add(kvp.Key, kvp.Value);
             }
-            request.UserAgent = "Mozilla/5.0 (Linux; Android 5.1.1; SM-N960F Build/JLS36C; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.136 Mobile Safari/537.36 MMWEBID/1042 MicroMessenger/7.0.15.1680(0x27000F34) Process/appbrand0 WeChat/arm32 NetType/WIFI Language/zh_CN ABI/arm32";
-            request.Referer = "https://servicewechat.com/wxff8cad2e9bf18719/2/page-frame.html";
-            request.Accept = "application/json, text/plain, */*";
-            request.Host = "miaomiao.scmttec.com";
-            request.ContinueTimeout = 2500;
-            request.Timeout = 2500;
+            if (headers != null)
+            {
+                foreach (KeyValuePair<string, string> kvp in headers)
+                {
+                    request.Headers.Add(kvp.Key, kvp.Value);
+                }
+            }
+            if (httpContent != null)
+            {
+                request.Content = httpContent;
+            }
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            DealHeader(response);
-            string json;
-            using (StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+            var responseMessage = await HttpClient.SendAsync(request);
+            DealHeader(responseMessage);
+
+            var jsonObject = JObject.Parse(await responseMessage.Content.ReadAsStringAsync());
+            if ("0000" == jsonObject.SelectToken("code").Value<string>())
             {
-                json = sr.ReadToEnd();
+                return jsonObject.SelectToken("data").Value<string>();
             }
-            var jsonObject = JObject.Parse(json);
-            if ("0000".Equals(jsonObject.SelectToken("code").ToString()))
+            else
             {
-                return jsonObject.SelectToken("data").ToString();
+                throw new BusinessException(jsonObject.SelectToken("code").Value<string>(), jsonObject.SelectToken("msg").Value<string>());
             }
-            throw new BusinessException(jsonObject.SelectToken("code").ToString(), jsonObject.SelectToken("msg").ToString());
         }
 
-        private Dictionary<string, string> GetCommonHeader()
+        private static Dictionary<string, string> GetCommonHeader()
         {
             Dictionary<string, string> commHeader = new Dictionary<string, string>();
             if (config.TK == null || config.Cookie.Count == 0)
@@ -149,10 +148,10 @@ namespace SecKill.Service
             return commHeader;
         }
 
-        private void DealHeader(HttpWebResponse response)
+        private static void DealHeader(HttpResponseMessage response)
         {
-            string[] cookies = response.Headers.GetValues("Set-Cookie");
-            if (cookies != null && cookies.Length > 0)
+            var cookies = response.Headers.GetValues("Set-Cookie");
+            if (cookies != null && cookies.Count() > 0)
             {
                 foreach (var item in cookies)
                 {
@@ -166,7 +165,7 @@ namespace SecKill.Service
             }
         }
 
-        private string EccHs(string secKillId, string st)
+        private static string EccHs(string secKillId, string st)
         {
             string salt = "ux$ad70*b";
             int memberId = config.MemberId;
@@ -174,7 +173,7 @@ namespace SecKill.Service
             return Md5Hex(md5Str + salt);
         }
 
-        private string Md5Hex(string str)
+        private static string Md5Hex(string str)
         {
             string result = "";
             MD5 md5 = MD5.Create();
@@ -184,6 +183,16 @@ namespace SecKill.Service
                 result += buffers[i].ToString("x2");
             }
             return result;
+        }
+
+        private static HttpClient GetHttpClient()
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Referrer = new System.Uri("https://servicewechat.com/wxff8cad2e9bf18719/2/page-frame.html");
+            client.DefaultRequestHeaders.Host = "miaomiao.scmttec.com";
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Linux; Android 5.1.1; SM-N960F Build/JLS36C; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.136 Mobile Safari/537.36 MMWEBID/1042 MicroMessenger/7.0.15.1680(0x27000F34) Process/appbrand0 WeChat/arm32 NetType/WIFI Language/zh_CN ABI/arm32");
+            client.DefaultRequestHeaders.Accept.ParseAdd("application/json, text/plain, */*");
+            return client;
         }
     }
 }
