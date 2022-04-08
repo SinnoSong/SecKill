@@ -13,7 +13,7 @@ namespace SecKill.Service
 {
     public class HttpService
     {
-        private string baseUrl = "https://miaomiao.scmttec.com";
+        private static readonly string baseUrl = "https://miaomiao.scmttec.com";
 
         /// <summary>
         /// 获取秒杀资格
@@ -24,7 +24,7 @@ namespace SecKill.Service
         /// <param name="idCard"></param>
         /// <param name="st"></param>
         /// <returns></returns>
-        public string SecKill(string seckillId, string vaccineIndex, string linkmanId, string idCard, string st)
+        public static string SecKill(string seckillId, string vaccineIndex, string linkmanId, string idCard, string st)
         {
             string path = baseUrl + "/seckill/seckill/subscribe.do";
             Dictionary<string, string> urlParams = new Dictionary<string, string>();
@@ -40,9 +40,12 @@ namespace SecKill.Service
         /// 获取疫苗列表
         /// </summary>
         /// <returns></returns>
-        public List<VaccineList> GetVaccineLists()
+        public static List<VaccineList> GetVaccineLists()
         {
-            HasAvailableConfig();
+            if (config.Cookie.Count == 0)
+            {
+                throw new BusinessException("请先配置cookie");
+            }
             string path = baseUrl + "/seckill/seckill/list.do";
             Dictionary<string, string> urlParams = new Dictionary<string, string>();
             urlParams.Add("offset", "0");
@@ -55,7 +58,7 @@ namespace SecKill.Service
         /// 获取接种人信息
         /// </summary>
         /// <returns></returns>
-        public List<Member> GetMembers()
+        public static List<Member> GetMembers()
         {
             string path = baseUrl + "/seckill/linkman/findByUserId.do";
             string json = Get(path, null, null);
@@ -66,7 +69,7 @@ namespace SecKill.Service
         /// </summary>
         /// <param name="vaccineId"></param>
         /// <returns></returns>
-        public string GetSt(string vaccineId)
+        public static string GetSt(string vaccineId)
         {
             string path = baseUrl + "/seckill/seckill/checkstock2.do";
             Dictionary<string, string> urlParams = new Dictionary<string, string>();
@@ -74,23 +77,8 @@ namespace SecKill.Service
             return JsonConvert.DeserializeObject<JObject>(Get(path, urlParams, null)).GetValue("st").ToString();
         }
 
-        public void Log(string vaccineId)
-        {
-            string path = baseUrl + "/seckill/seckill/log.do";
-            Dictionary<string, string> urlParams = new Dictionary<string, string>();
-            urlParams.Add("id", vaccineId);
-            Get(path, urlParams, null);
-        }
 
-        private void HasAvailableConfig()
-        {
-            if (config.Cookie.Count == 0)
-            {
-                throw new BusinessException("请先配置cookie");
-            }
-        }
-
-        private string Get(string path, Dictionary<string, string> urlParams, Dictionary<string, string> headers)
+        private static string Get(string path, Dictionary<string, string> urlParams, Dictionary<string, string> headers)
         {
             if (urlParams != null && urlParams.Count != 0)
             {
@@ -133,7 +121,7 @@ namespace SecKill.Service
             throw new BusinessException(jsonObject.SelectToken("code").ToString(), jsonObject.SelectToken("msg").ToString());
         }
 
-        private Dictionary<string, string> GetCommonHeader()
+        private static Dictionary<string, string> GetCommonHeader()
         {
             Dictionary<string, string> commHeader = new Dictionary<string, string>();
             if (config.TK == null || config.Cookie.Count == 0)
@@ -149,7 +137,7 @@ namespace SecKill.Service
             return commHeader;
         }
 
-        private void DealHeader(HttpWebResponse response)
+        private static void DealHeader(HttpWebResponse response)
         {
             string[] cookies = response.Headers.GetValues("Set-Cookie");
             if (cookies != null && cookies.Length > 0)
@@ -166,7 +154,7 @@ namespace SecKill.Service
             }
         }
 
-        private string EccHs(string secKillId, string st)
+        private static string EccHs(string secKillId, string st)
         {
             string salt = "ux$ad70*b";
             int memberId = config.MemberId;
@@ -174,7 +162,7 @@ namespace SecKill.Service
             return Md5Hex(md5Str + salt);
         }
 
-        private string Md5Hex(string str)
+        private static string Md5Hex(string str)
         {
             string result = "";
             MD5 md5 = MD5.Create();

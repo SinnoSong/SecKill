@@ -1,26 +1,19 @@
-﻿using SecKill.Model;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using config = SecKill.Config.Config;
+using SecKill.Model;
 
 namespace SecKill.Service
 {
     public class SecKillService
     {
-        private HttpService httpService;
 
-        public SecKillService(HttpService httpService)
-        {
-            this.httpService = httpService;
-        }
-
-        public void StartSecKill(int vaccineId, string startDateStr)
+        public static void StartSecKill(int vaccineId, string startDateStr)
         {
             long startDate = (Convert.ToDateTime(startDateStr).ToUniversalTime().Ticks - 621355968000000000) / 10000;
 
-            long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            long now = (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000;
             if (now + 5000 < startDate)
             {
                 LogModel.UpdateLogStr("还未到获取st时间，等待中。。。");
@@ -32,7 +25,7 @@ namespace SecKill.Service
                 try
                 {
                     LogModel.UpdateLogStr("Thread ID：main,请求获取加密参数ST");
-                    config.ST = httpService.GetSt(vaccineId.ToString());
+                    config.ST = HttpService.GetSt(vaccineId.ToString());
                     LogModel.UpdateLogStr($"Thread ID：main，成功获取加密参数st:{config.ST}");
                     break;
                 }
@@ -49,7 +42,7 @@ namespace SecKill.Service
                     LogModel.UpdateLogStr($"Thread ID:main，获取st失败：{exception.Message}");
                 }
             }
-            now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            now = DateTime.Now.ToFileTime();
             if (now + 50 < startDate)
             {
                 LogModel.UpdateLogStr($"获取st参数成功，还未到秒杀开始时间，等待中。。。。。。");
@@ -58,11 +51,11 @@ namespace SecKill.Service
 
             // 添加到Task中
             Task.Factory.StartNew(() => SecKillTask(false, vaccineId, startDate));
-            Thread.Sleep(200);
+            Thread.Sleep(100);
             Task.Factory.StartNew(() => SecKillTask(true, vaccineId, startDate));
-            Thread.Sleep(200);
+            Thread.Sleep(100);
             Task.Factory.StartNew(() => SecKillTask(true, vaccineId, startDate));
-            Thread.Sleep(200);
+            Thread.Sleep(100);
             Task.Factory.StartNew(() => SecKillTask(false, vaccineId, startDate));
 
             try
@@ -82,12 +75,7 @@ namespace SecKill.Service
             }
         }
 
-        internal List<VaccineList> GetVaccineLists()
-        {
-            return httpService.GetVaccineLists();
-        }
-
-        private void SecKillTask(bool resetSt, int vaccineId, long startTime)
+        private static void SecKillTask(bool resetSt, int vaccineId, long startTime)
         {
             do
             {
@@ -97,11 +85,11 @@ namespace SecKill.Service
                     if (resetSt)
                     {
                         LogModel.UpdateLogStr($"Thread ID:{id},请求获取加密参数ST");
-                        config.ST = httpService.GetSt(vaccineId.ToString());
+                        config.ST = HttpService.GetSt(vaccineId.ToString());
                         LogModel.UpdateLogStr($"Thread ID:{id},成功获取加密参数ST");
                     }
                     LogModel.UpdateLogStr($"Thread ID:{id},秒杀请求");
-                    httpService.SecKill(vaccineId.ToString(), "1", config.MemberId.ToString(),
+                    HttpService.SecKill(vaccineId.ToString(), "1", config.MemberId.ToString(),
                         config.IdCard, config.ST);
                     config.Success = true;
                     LogModel.UpdateLogStr($"Thread ID:{id},抢购成功");
@@ -125,7 +113,7 @@ namespace SecKill.Service
                     LogModel.UpdateLogStr("未知异常：" + exception.Message);
                 }
                 long now = (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000;
-                if (now > startTime + 30 * 1000 || config.Success.HasValue)
+                if (now > startTime + 10 * 1000 || config.Success.HasValue)
                 {
                     break;
                 }

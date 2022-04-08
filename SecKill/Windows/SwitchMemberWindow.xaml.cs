@@ -12,7 +12,6 @@ namespace SecKill.Windows
     /// </summary>
     public partial class SwitchMemberWindow : Window
     {
-        HttpService HttpService { get; set; }
         public SwitchMemberWindow()
         {
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -22,7 +21,6 @@ namespace SecKill.Windows
 
         private void InitialData()
         {
-            HttpService = new HttpService();
             List<Member> members = HttpService.GetMembers();
             //List<Member> members = new List<Member>() { new Member() { Id = 1, Name = "1", IdCardNo = "1" }, new Member() { Id = 2, Name = "2", IdCardNo = "2" } };
             if (members.Count == 0)

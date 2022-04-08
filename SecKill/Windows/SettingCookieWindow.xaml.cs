@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using SecKill.Model;
+using System.ComponentModel;
 using System.Windows;
 using config = SecKill.Config.Config;
 
