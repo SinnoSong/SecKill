@@ -1,8 +1,8 @@
-﻿using System;
+﻿using SecKill.Model;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using config = SecKill.Config.Config;
-using SecKill.Model;
 
 namespace SecKill.Service
 {
@@ -13,7 +13,7 @@ namespace SecKill.Service
         {
             long startDate = (Convert.ToDateTime(startDateStr).ToUniversalTime().Ticks - 621355968000000000) / 10000;
 
-            long now = (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000;
+            long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             if (now + 5000 < startDate)
             {
                 LogModel.UpdateLogStr("还未到获取st时间，等待中。。。");
@@ -24,25 +24,25 @@ namespace SecKill.Service
                 // 提前5秒钟获取服务器时间戳接口，计算加密用
                 try
                 {
-                    LogModel.UpdateLogStr("Thread ID：main,请求获取加密参数ST");
+                    LogModel.UpdateLogStr($"线程名称：{Thread.CurrentThread.Name},请求获取加密参数ST");
                     config.ST = HttpService.GetSt(vaccineId.ToString());
-                    LogModel.UpdateLogStr($"Thread ID：main，成功获取加密参数st:{config.ST}");
+                    LogModel.UpdateLogStr($"线程名称：{Thread.CurrentThread.Name}，成功获取加密参数st:{config.ST}");
                     break;
                 }
                 catch (TimeoutException)
                 {
-                    LogModel.UpdateLogStr("Thread ID：main，获取st失败，超时");
+                    LogModel.UpdateLogStr($"线程名称：{Thread.CurrentThread.Name}，获取st失败，超时");
                 }
                 catch (BusinessException e)
                 {
-                    LogModel.UpdateLogStr($"Thread ID:main，获取st失败：{e.Msg}");
+                    LogModel.UpdateLogStr($"线程名称：{Thread.CurrentThread.Name}，获取st失败：{e.Msg}");
                 }
                 catch (Exception exception)
                 {
-                    LogModel.UpdateLogStr($"Thread ID:main，获取st失败：{exception.Message}");
+                    LogModel.UpdateLogStr($"线程名称：{Thread.CurrentThread.Name}，获取st失败：{exception.Message}");
                 }
             }
-            now = DateTime.Now.ToFileTime();
+            now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             if (now + 50 < startDate)
             {
                 LogModel.UpdateLogStr($"获取st参数成功，还未到秒杀开始时间，等待中。。。。。。");
@@ -113,7 +113,7 @@ namespace SecKill.Service
                     LogModel.UpdateLogStr("未知异常：" + exception.Message);
                 }
                 long now = (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000;
-                if (now > startTime + 10 * 1000 || config.Success.HasValue)
+                if (now > startTime + 30 * 1000 || config.Success.HasValue)
                 {
                     break;
                 }
