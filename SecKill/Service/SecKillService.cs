@@ -9,7 +9,7 @@ namespace SecKill.Service
     public class SecKillService
     {
 
-        public static void StartSecKill(int vaccineId, string startDateStr, int beginBeforeStart, int interval)
+        public static void StartSecKill(int vaccineId, string startDateStr)
         {
             long startDate = (Convert.ToDateTime(startDateStr).ToUniversalTime().Ticks - 621355968000000000) / 10000;
 
@@ -43,20 +43,19 @@ namespace SecKill.Service
                 }
             }
             now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            // 修改 beginBeforeStart 设置
-            if (now + beginBeforeStart < startDate)
+            if (now + 50 < startDate)
             {
                 LogModel.UpdateLogStr($"获取st参数成功，还未到秒杀开始时间，等待中。。。。。。");
-                Thread.Sleep((int)(startDate - now - beginBeforeStart));
+                Thread.Sleep((int)(startDate - now - 50));
             }
 
             // 添加到Task中
             Task.Factory.StartNew(() => SecKillTask(false, vaccineId, startDate));
-            Thread.Sleep(interval);
+            Thread.Sleep(100);
             Task.Factory.StartNew(() => SecKillTask(true, vaccineId, startDate));
-            Thread.Sleep(interval);
+            Thread.Sleep(100);
             Task.Factory.StartNew(() => SecKillTask(true, vaccineId, startDate));
-            Thread.Sleep(interval);
+            Thread.Sleep(100);
             Task.Factory.StartNew(() => SecKillTask(false, vaccineId, startDate));
 
             try

@@ -8,8 +8,6 @@ using SecKill.Windows;
 using config = SecKill.Config.Config;
 using SecKill.Service;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Text.RegularExpressions;
 
 namespace SecKill
 {
@@ -80,7 +78,7 @@ namespace SecKill
                 };
                 MemberWindow = switchMemberWindow;
             }
-
+            
             MemberWindow.Show();
         }
 
@@ -105,30 +103,11 @@ namespace SecKill
             VaccineList selectedItem = DataGrid.SelectedItem as VaccineList;
             int id = selectedItem.Id;
             string startIime = selectedItem.StartTime;
-            if (!int.TryParse(beginBeforeStart.Text, out int beginBeforeStartInt))
-            {
-                beginBeforeStartInt = 50;
-            }
-            if (!int.TryParse(interval.Text, out int intervalInt))
-            {
-                intervalInt = 200;
-            }
-
             Task.Run(() =>
             {
-                SecKillService.StartSecKill(id, startIime, beginBeforeStartInt, intervalInt);
+                SecKillService.StartSecKill(id, startIime);
             });
             MessageBox.Show("设置抢购成功");
-        }
-
-        private void Tb_PreviewTextInput(object sender, TextCompositionEventArgs e)
-
-        {
-
-            Regex re = new Regex("[^0-9]+");
-
-            e.Handled = re.IsMatch(e.Text);
-
         }
     }
 }
