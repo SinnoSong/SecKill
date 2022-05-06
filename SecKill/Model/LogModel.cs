@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Text;
 
 namespace SecKill.Model
@@ -26,7 +27,7 @@ namespace SecKill.Model
         public static void UpdateLogStr(string str)
         {
             StringBuilder stringBuilder = new StringBuilder(LogStr);
-            LogStr = stringBuilder.AppendLine(str).ToString();
+            LogStr = stringBuilder.AppendLine(DateTime.Now + " : " + str).ToString();
         }
     }
 }
