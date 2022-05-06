@@ -105,10 +105,6 @@ namespace SecKill
             VaccineList selectedItem = DataGrid.SelectedItem as VaccineList;
             int id = selectedItem.Id;
             string startIime = selectedItem.StartTime;
-            if (!int.TryParse(beginBeforeStart.Text, out int beginBeforeStartInt))
-            {
-                beginBeforeStartInt = 50;
-            }
             if (!int.TryParse(interval.Text, out int intervalInt))
             {
                 intervalInt = 200;
@@ -116,7 +112,7 @@ namespace SecKill
 
             Task.Run(() =>
             {
-                SecKillService.StartSecKill(id, startIime, beginBeforeStartInt, intervalInt);
+                SecKillService.StartSecKill(id, startIime, intervalInt);
             });
             MessageBox.Show("设置抢购成功");
         }

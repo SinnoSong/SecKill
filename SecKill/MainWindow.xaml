@@ -45,19 +45,13 @@
                 <Button x:Name="SwitchMember" Click="SwitchMember_Click" Margin="5">选择成员</Button>
                 <Button x:Name="RefreshVaccineList" Click="RefreshVaccineList_Click" Margin="5">刷新疫苗列表</Button>
             </StackPanel>
-            <WrapPanel HorizontalAlignment="Center">
-                <WrapPanel>
-                    <Label>抢苗开始前提前多久开始进行抢苗（毫秒,默认50）</Label>
-                    <TextBox x:Name="beginBeforeStart" Width="300" InputMethod.IsInputMethodEnabled="False" PreviewTextInput="Tb_PreviewTextInput"></TextBox>
-                </WrapPanel>
+            <StackPanel HorizontalAlignment="Center">
                 <WrapPanel>
                     <Label>每次抢苗时间间隔（毫秒，默认200）</Label>
-                    <TextBox x:Name="interval" Width="300" InputMethod.IsInputMethodEnabled="False" PreviewTextInput="Tb_PreviewTextInput"></TextBox>
+                    <TextBox x:Name="interval" Width="150" InputMethod.IsInputMethodEnabled="False" PreviewTextInput="Tb_PreviewTextInput"></TextBox>
                 </WrapPanel>
-                <WrapPanel>
-                    <Button x:Name="StartKill" Click="StartKill_Click" Margin="5">开始秒杀</Button>
-                </WrapPanel>
-            </WrapPanel>
+                <Button x:Name="StartKill" Click="StartKill_Click" Margin="5" MaxWidth="70">开始秒杀</Button>
+            </StackPanel>
         </WrapPanel>
     </Grid>
 </Window>

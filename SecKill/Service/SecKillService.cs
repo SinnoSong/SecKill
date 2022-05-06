@@ -9,19 +9,19 @@ namespace SecKill.Service
     public class SecKillService
     {
 
-        public static void StartSecKill(int vaccineId, string startDateStr, int beginBeforeStart, int interval)
+        public static void StartSecKill(int vaccineId, string startDateStr, int interval)
         {
             long startDate = (Convert.ToDateTime(startDateStr).ToUniversalTime().Ticks - 621355968000000000) / 10000;
 
             long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            if (now + 5000 < startDate)
+            if (now < startDate)
             {
                 LogModel.UpdateLogStr("还未到获取st时间，等待中。。。");
-                Thread.Sleep((int)(startDate - now - 5000));
+                Thread.Sleep((int)(startDate - now));
             }
             while (true)
             {
-                // 提前5秒钟获取服务器时间戳接口，计算加密用
+                // 开始抢之后获取服务器时间戳接口，计算加密用
                 try
                 {
                     LogModel.UpdateLogStr($"线程名称：{Thread.CurrentThread.Name},请求获取加密参数ST");
@@ -41,13 +41,6 @@ namespace SecKill.Service
                 {
                     LogModel.UpdateLogStr($"线程名称：{Thread.CurrentThread.Name}，获取st失败：{exception.Message}");
                 }
-            }
-            now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            // 修改 beginBeforeStart 设置
-            if (now + beginBeforeStart < startDate)
-            {
-                LogModel.UpdateLogStr($"获取st参数成功，还未到秒杀开始时间，等待中。。。。。。");
-                Thread.Sleep((int)(startDate - now - beginBeforeStart));
             }
 
             // 添加到Task中

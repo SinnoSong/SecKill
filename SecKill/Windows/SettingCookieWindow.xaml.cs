@@ -1,5 +1,4 @@
-﻿using SecKill.Model;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using config = SecKill.Config.Config;
 
@@ -25,13 +24,16 @@ namespace SecKill.Windows
             else
             {
                 config.TK = TKText.Text;
-                calCookie(CookieText.Text);
+                CalCookie(CookieText.Text);
+                TKText.Text = null;
+                CookieText.Text = null;
                 Hide();
             }
         }
 
-        private void calCookie(string cookie)
+        private void CalCookie(string cookie)
         {
+            config.Cookie.Clear();
             string[] s = cookie.Replace(" ", "").Split(';');
             foreach (var item in s)
             {
@@ -42,7 +44,7 @@ namespace SecKill.Windows
         protected override void OnClosing(CancelEventArgs e)
         {
             e.Cancel = true;
-            this.Hide();
+            Hide();
         }
     }
 }
