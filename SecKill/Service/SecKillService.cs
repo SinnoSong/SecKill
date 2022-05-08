@@ -2,11 +2,12 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using config = SecKill.Config.Config;
 
 namespace SecKill.Service
 {
-    public class SecKillService
+    public static class SecKillService
     {
 
         public static void StartSecKill(int vaccineId, string startDateStr, int interval)
@@ -43,75 +44,62 @@ namespace SecKill.Service
                 }
             }
 
-            // 添加到Task中
-            Task.Factory.StartNew(() => SecKillTask(false, vaccineId, startDate));
-            Thread.Sleep(interval);
-            Task.Factory.StartNew(() => SecKillTask(true, vaccineId, startDate));
-            Thread.Sleep(interval);
-            Task.Factory.StartNew(() => SecKillTask(true, vaccineId, startDate));
-            Thread.Sleep(interval);
-            Task.Factory.StartNew(() => SecKillTask(false, vaccineId, startDate));
-
-            try
+            // 把task添加到队列中
+            Queue<Action> tasks = new Queue<Action>();
+            tasks.Enqueue(() => SecKillTask(false, vaccineId));
+            tasks.Enqueue(() => SecKillTask(true, vaccineId));
+            // 5秒后或者秒杀成功后停止
+            while (now < startDate + 5000 && !config.Success)
             {
-                if (config.Success.Value)
-                {
-                    LogModel.UpdateLogStr("抢购成功，请登录秒苗小程序查看");
-                }
-                else
-                {
-                    LogModel.UpdateLogStr("抢购失败");
-                }
+                Action action = tasks.Dequeue();
+                Task.Factory.StartNew(action);
+                tasks.Enqueue(action);
+                Thread.Sleep(interval);
+                now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             }
-            catch (Exception e)
+            if (config.Success)
             {
-                LogModel.UpdateLogStr(e.Message);
+                LogModel.UpdateLogStr("秒杀结束，抢购成功，请登录秒苗小程序查看");
+            }
+            else
+            {
+                LogModel.UpdateLogStr("秒杀结束，抢购失败");
             }
         }
 
-        private static void SecKillTask(bool resetSt, int vaccineId, long startTime)
+        private static void SecKillTask(bool resetSt, int vaccineId)
         {
-            do
+            long id = Thread.CurrentThread.ManagedThreadId;
+            try
             {
-                long id = Thread.CurrentThread.ManagedThreadId;
-                try
+                if (resetSt)
                 {
-                    if (resetSt)
-                    {
-                        LogModel.UpdateLogStr($"Thread ID:{id},请求获取加密参数ST");
-                        config.ST = HttpService.GetSt(vaccineId.ToString());
-                        LogModel.UpdateLogStr($"Thread ID:{id},成功获取加密参数ST");
-                    }
-                    LogModel.UpdateLogStr($"Thread ID:{id},秒杀请求");
-                    HttpService.SecKill(vaccineId.ToString(), "1", config.MemberId.ToString(),
-                        config.IdCard, config.ST);
-                    config.Success = true;
-                    LogModel.UpdateLogStr($"Thread ID:{id},抢购成功");
-                    break;
+                    LogModel.UpdateLogStr($"Thread ID:{id},请求获取加密参数ST");
+                    config.ST = HttpService.GetSt(vaccineId.ToString());
+                    LogModel.UpdateLogStr($"Thread ID:{id},成功获取加密参数ST");
                 }
-                catch (BusinessException e)
+                LogModel.UpdateLogStr($"Thread ID:{id},秒杀请求");
+                HttpService.SecKill(vaccineId.ToString(), "1", config.MemberId.ToString(),
+                    config.IdCard, config.ST);
+                config.Success = true;
+                LogModel.UpdateLogStr($"Thread ID:{id},抢购成功");
+            }
+            catch (BusinessException e)
+            {
+                LogModel.UpdateLogStr($"Thread ID:{id},抢购失败：{e.Msg}");
+                if (e.Msg.Contains("没抢到"))
                 {
-                    LogModel.UpdateLogStr($"Thread ID:{id},抢购失败：{e.Msg}");
-                    if (e.Msg.Contains("没抢到"))
-                    {
-                        config.Success = false;
-                        break;
-                    }
+                    config.Success = false;
                 }
-                catch (TimeoutException)
-                {
-                    LogModel.UpdateLogStr($"Thread Id :{Thread.CurrentThread.ManagedThreadId},抢购失败：超时了");
-                }
-                catch (Exception exception)
-                {
-                    LogModel.UpdateLogStr("未知异常：" + exception.Message);
-                }
-                long now = (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000;
-                if (now > startTime + 30 * 1000 || config.Success.HasValue)
-                {
-                    break;
-                }
-            } while (true);
+            }
+            catch (TimeoutException)
+            {
+                LogModel.UpdateLogStr($"Thread Id :{Thread.CurrentThread.ManagedThreadId},抢购失败：超时了");
+            }
+            catch (Exception exception)
+            {
+                LogModel.UpdateLogStr("未知异常：" + exception.Message);
+            }
         }
     }
 }

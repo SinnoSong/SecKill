@@ -22,7 +22,7 @@ namespace SecKill.Config
         public static string MemberName;
         public static string RegionCode = "5101";
         public static Dictionary<string, string> Cookie = new Dictionary<string, string>();
-        public static bool? Success = false;
+        public static bool Success = false;
         public static string ST;
     }
 }
