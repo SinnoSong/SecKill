@@ -52,7 +52,7 @@ namespace SecKill.Service
             while (now < startDate + 5000 && !config.Success)
             {
                 Action action = tasks.Dequeue();
-                Task.Factory.StartNew(action);
+                Task.Run(action);
                 tasks.Enqueue(action);
                 Thread.Sleep(interval);
                 now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
