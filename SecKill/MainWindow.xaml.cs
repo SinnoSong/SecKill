@@ -10,6 +10,7 @@ using SecKill.Service;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Text.RegularExpressions;
+using SecKill.Helper;
 
 namespace SecKill
 {
@@ -113,7 +114,7 @@ namespace SecKill
             Task.Run(() =>
             {
                 SecKillService.StartSecKill(id, startIime, intervalInt);
-            });
+            }).LogExcetion();
             MessageBox.Show("设置抢购成功");
         }
 
