@@ -23,11 +23,12 @@ namespace SecKill.Service
             var st = long.Parse(GetSt(vaccineId.ToString()));
             if (startDate > st)
             {
-                Thread.Sleep((int)(startDate - st));
+                //设置休眠到抢苗前0.2秒时开始抢
+                Thread.Sleep((int)(startDate - st - 200));
             }
 
-            // 5秒后或者秒杀成功后停止
-            while (now < startDate + 5000 && !config.Success)
+            // 3秒后或者秒杀成功后停止
+            while (now < startDate + 3000 && !config.Success)
             {
                 Task.Run(() => SecKillTask(vaccineId));
                 Thread.Sleep(interval);
