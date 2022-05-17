@@ -40,12 +40,16 @@
                 <ComboBox x:Name="City" Width="150" DisplayMemberPath="Name" SelectedValuePath="Value" Margin="5"/>
                 <Button x:Name="Confirm" Click="Confirm_Click" Margin="5">确定</Button>
             </StackPanel>
-            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="3">
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="3" MinWidth="500">
                 <Button x:Name="SettingCookie" Click="SettingCookie_Click" Margin="5">设置Cookie</Button>
                 <Button x:Name="SwitchMember" Click="SwitchMember_Click" Margin="5">选择成员</Button>
                 <Button x:Name="RefreshVaccineList" Click="RefreshVaccineList_Click" Margin="5">刷新疫苗列表</Button>
             </StackPanel>
             <StackPanel HorizontalAlignment="Center">
+                <WrapPanel>
+                    <Label>秒杀开始前提前多久开始抢（毫秒，默认200）</Label>
+                    <TextBox x:Name="beforeStart" Width="150" InputMethod.IsInputMethodEnabled="False" PreviewTextInput="Tb_PreviewTextInput"></TextBox>
+                </WrapPanel>
                 <WrapPanel>
                     <Label>每次抢苗时间间隔（毫秒，默认200）</Label>
                     <TextBox x:Name="interval" Width="150" InputMethod.IsInputMethodEnabled="False" PreviewTextInput="Tb_PreviewTextInput"></TextBox>

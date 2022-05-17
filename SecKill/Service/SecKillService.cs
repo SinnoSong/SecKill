@@ -9,7 +9,7 @@ namespace SecKill.Service
     public static class SecKillService
     {
 
-        public static void StartSecKill(int vaccineId, string startDateStr, int interval)
+        public static void StartSecKill(int vaccineId, string startDateStr, int interval, int beforeStartInt)
         {
             long startDate = (Convert.ToDateTime(startDateStr).ToUniversalTime().Ticks - 621355968000000000) / 10000;
 
@@ -23,8 +23,8 @@ namespace SecKill.Service
             var st = long.Parse(GetSt(vaccineId.ToString()));
             if (startDate > st)
             {
-                //设置休眠到抢苗前0.5秒时开始抢
-                Thread.Sleep((int)(startDate - st - 500));
+                //设置休眠到抢苗前beforeStartInt毫秒时开始抢
+                Thread.Sleep((int)(startDate - st - beforeStartInt));
             }
 
             // 3秒后或者秒杀成功后停止
