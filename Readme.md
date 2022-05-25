@@ -6,7 +6,7 @@
 ## 使用
 1. 打开exe文件，选择好要秒杀区域的省市，点击确定。  
 2. 先打开**fiddler（抓包工具，使用请自行搜索）**，再打开微信PC版打开秒苗小程序。  
-3. 在秒苗小程序上点击**我的**=>**家庭成员管理**。Fiddler中可以看到一个链接是*http://miaomiao.scmttec.com/seckill/linkman/findByUserId.do*请求被抓取到。
+3. 在秒苗小程序上点击**我的**=>**家庭成员管理**。Fiddler中可以看到一个链接是[miaomiao.scmttec.com/seckill/linkman/findByUserId.do](miaomiao.scmttec.com/seckill/linkman/findByUserId.do)请求被抓取到。
 4. Fiddler软件中右侧点击**Inspectors**，再点击**Raw**，在下面显示内容中复制**tk,Cookie**的值。
 5. 点击**设置Cookie按钮**将上一步抓取的**tk,Cookie**值复制到**tk,Cookie**文本框中，点击**保存**。
 6. 点击**选择成员**，选择要秒杀的成员，点击**确定**。
