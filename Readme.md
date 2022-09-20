@@ -1,6 +1,8 @@
 # 九价疫苗秒杀程序Windows版
 九价秒杀工具WPF版，代码主要业务逻辑参考java项目：https://github.com/lyrric/seckill 。  
 本软件**仅支持秒苗小程序**，不支持其他小程序。  
+## 此项目已停止维护  
+非常抱歉，由于约苗后台做了限制，无法判断其逻辑，此项目已失效。 不会再进行维护及更新。
 ## 运行环境
 **基于.net frameword4.7.2开发，win10 1803版之后版本直接可以运行，之前版本的win10、win7、win8.1需要安装.net framework 4.7.2运行**，下载链接：https://dotnet.microsoft.com/zh-cn/download/dotnet-framework/net472
 ## 使用
